@@ -1,0 +1,575 @@
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&family=Barlow:wght@300;400;500&family=Barlow+Condensed:wght@400;500;600&display=swap');
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  .lmu-app {
+    background: #0a0c10;
+    min-height: 600px;
+    padding: 0;
+    font-family: 'Barlow', sans-serif;
+    color: #e0e4ec;
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .header {
+    background: linear-gradient(135deg, #0d1117 0%, #111620 100%);
+    border-bottom: 1px solid #1e2a3a;
+    padding: 18px 24px 14px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .header::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #00d4ff, #ff4444, transparent);
+  }
+
+  .header-logo {
+    font-family: 'Orbitron', monospace;
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    color: #fff;
+  }
+
+  .header-logo span {
+    color: #00d4ff;
+  }
+
+  .header-sub {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 11px;
+    letter-spacing: 4px;
+    color: #4a6070;
+    text-transform: uppercase;
+    margin-top: 2px;
+  }
+
+  .header-right {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .stat-pill {
+    background: #12191f;
+    border: 1px solid #1e2d3d;
+    border-radius: 6px;
+    padding: 6px 12px;
+    text-align: center;
+  }
+
+  .stat-pill .val {
+    font-family: 'Orbitron', monospace;
+    font-size: 16px;
+    font-weight: 700;
+    color: #00d4ff;
+  }
+
+  .stat-pill .lbl {
+    font-size: 9px;
+    letter-spacing: 2px;
+    color: #4a6070;
+    text-transform: uppercase;
+    margin-top: 1px;
+  }
+
+  .filters {
+    padding: 12px 24px;
+    background: #0d1117;
+    border-bottom: 1px solid #151d28;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .filter-btn {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 5px 14px;
+    border-radius: 4px;
+    border: 1px solid #1e2d3d;
+    background: transparent;
+    color: #4a6070;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .filter-btn.active, .filter-btn:hover {
+    background: #12253a;
+    color: #00d4ff;
+    border-color: #00d4ff44;
+  }
+
+  .circuits-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 10px;
+    padding: 16px 24px 24px;
+    background: #0a0c10;
+  }
+
+  .circuit-card {
+    background: #0d1117;
+    border: 1px solid #151d28;
+    border-radius: 8px;
+    padding: 14px 14px 12px;
+    cursor: pointer;
+    transition: all 0.18s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .circuit-card::before {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 2px;
+    background: #1e2d3d;
+    transition: background 0.18s;
+  }
+
+  .circuit-card:hover {
+    background: #111820;
+    border-color: #1e3a50;
+    transform: translateY(-1px);
+  }
+
+  .circuit-card:hover::before {
+    background: #00d4ff66;
+  }
+
+  .circuit-card.has-time {
+    border-color: #1e3a2a;
+  }
+
+  .circuit-card.has-time::before {
+    background: #00ff8866;
+  }
+
+  .circuit-flag {
+    font-size: 20px;
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+
+  .circuit-name {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    color: #c0c8d8;
+    text-transform: uppercase;
+    line-height: 1.2;
+    margin-bottom: 10px;
+  }
+
+  .circuit-time {
+    font-family: 'Orbitron', monospace;
+    font-size: 15px;
+    font-weight: 500;
+    color: #00ff88;
+    letter-spacing: 1px;
+  }
+
+  .circuit-no-time {
+    font-size: 11px;
+    color: #2a3a4a;
+    letter-spacing: 1px;
+    font-family: 'Barlow Condensed', sans-serif;
+    text-transform: uppercase;
+  }
+
+  .circuit-car {
+    font-size: 10px;
+    color: #4a7090;
+    margin-top: 3px;
+    font-family: 'Barlow', sans-serif;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .circuit-badge {
+    position: absolute;
+    top: 8px; right: 8px;
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: #00ff88;
+    box-shadow: 0 0 6px #00ff8866;
+  }
+
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.8);
+    z-index: 100;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .modal-overlay.open {
+    display: flex;
+  }
+
+  .modal {
+    background: #0d1117;
+    border: 1px solid #1e3a50;
+    border-radius: 12px;
+    padding: 28px;
+    width: 340px;
+    position: relative;
+    box-shadow: 0 0 40px #00d4ff11;
+  }
+
+  .modal::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #00d4ff, transparent);
+    border-radius: 12px 12px 0 0;
+  }
+
+  .modal-title {
+    font-family: 'Orbitron', monospace;
+    font-size: 12px;
+    letter-spacing: 3px;
+    color: #00d4ff;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+
+  .modal-circuit {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 22px;
+    font-weight: 600;
+    color: #fff;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #151d28;
+  }
+
+  .form-group {
+    margin-bottom: 14px;
+  }
+
+  .form-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 10px;
+    letter-spacing: 3px;
+    color: #4a6070;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+    display: block;
+  }
+
+  .form-input {
+    width: 100%;
+    background: #060a0f;
+    border: 1px solid #1e2d3d;
+    border-radius: 6px;
+    color: #e0e4ec;
+    font-family: 'Orbitron', monospace;
+    font-size: 14px;
+    padding: 10px 12px;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+
+  .form-input:focus {
+    border-color: #00d4ff55;
+  }
+
+  .form-input::placeholder {
+    color: #2a3a4a;
+    font-size: 12px;
+  }
+
+  .form-input.car-input {
+    font-family: 'Barlow', sans-serif;
+    font-size: 13px;
+  }
+
+  .modal-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 20px;
+  }
+
+  .btn-save {
+    flex: 1;
+    background: #00d4ff15;
+    border: 1px solid #00d4ff44;
+    border-radius: 6px;
+    color: #00d4ff;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    padding: 10px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .btn-save:hover {
+    background: #00d4ff25;
+  }
+
+  .btn-delete {
+    background: #ff444415;
+    border: 1px solid #ff444430;
+    border-radius: 6px;
+    color: #ff4444;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 10px 14px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .btn-delete:hover {
+    background: #ff444425;
+  }
+
+  .btn-cancel {
+    background: transparent;
+    border: 1px solid #1e2d3d;
+    border-radius: 6px;
+    color: #4a6070;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 10px 14px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .btn-cancel:hover {
+    color: #c0c8d8;
+    border-color: #2a3d50;
+  }
+
+  .prev-time {
+    background: #060a0f;
+    border: 1px solid #0a1520;
+    border-radius: 6px;
+    padding: 10px 12px;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .prev-time-lbl {
+    font-size: 9px;
+    letter-spacing: 2px;
+    color: #2a4050;
+    text-transform: uppercase;
+    font-family: 'Barlow Condensed', sans-serif;
+  }
+
+  .prev-time-val {
+    font-family: 'Orbitron', monospace;
+    font-size: 13px;
+    color: #00ff8880;
+  }
+</style>
+
+<div class="lmu-app">
+  <div class="header">
+    <div>
+      <div class="header-logo">LMU <span>TRACKER</span></div>
+      <div class="header-sub">Le Mans Ultimate — Évolution Pilote</div>
+    </div>
+    <div class="header-right">
+      <div class="stat-pill">
+        <div class="val" id="stat-circuits">0</div>
+        <div class="lbl">Circuits</div>
+      </div>
+      <div class="stat-pill">
+        <div class="val" id="stat-done">0</div>
+        <div class="lbl">Chronos</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="filters">
+    <button class="filter-btn active" onclick="setFilter('all', this)">Tous</button>
+    <button class="filter-btn" onclick="setFilter('done', this)">Chronométrés</button>
+    <button class="filter-btn" onclick="setFilter('todo', this)">À faire</button>
+  </div>
+
+  <div class="circuits-grid" id="grid"></div>
+</div>
+
+<div class="modal-overlay" id="modal-overlay">
+  <div class="modal">
+    <div class="modal-title">Enregistrer un chrono</div>
+    <div class="modal-circuit" id="modal-circuit-name"></div>
+    <div class="prev-time" id="prev-block" style="display:none">
+      <span class="prev-time-lbl">Meilleur temps</span>
+      <span class="prev-time-val" id="prev-time-val"></span>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Temps au tour (mm:ss.mmm)</label>
+      <input type="text" class="form-input" id="input-time" placeholder="1:45.234" />
+    </div>
+    <div class="form-group">
+      <label class="form-label">Voiture</label>
+      <input type="text" class="form-input car-input" id="input-car" placeholder="Ex: Ferrari 499P" />
+    </div>
+    <div class="modal-actions">
+      <button class="btn-save" onclick="saveTime()">Enregistrer</button>
+      <button class="btn-delete" id="btn-del" style="display:none" onclick="deleteTime()">Effacer</button>
+      <button class="btn-cancel" onclick="closeModal()">Annuler</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const circuits = [
+  { id: 'bahrain', name: 'Bahrain', flag: '🇧🇭' },
+  { id: 'barcelona', name: 'Barcelona', flag: '🇪🇸' },
+  { id: 'austin', name: 'Austin', flag: '🇺🇸' },
+  { id: 'fuji', name: 'Fuji', flag: '🇯🇵' },
+  { id: 'imola', name: 'Imola', flag: '🇮🇹' },
+  { id: 'interlagos', name: 'Interlagos', flag: '🇧🇷' },
+  { id: 'lemans', name: 'Le Mans', flag: '🇫🇷' },
+  { id: 'monza', name: 'Monza', flag: '🇮🇹' },
+  { id: 'paulricard', name: 'Paul Ricard', flag: '🇫🇷' },
+  { id: 'portimao', name: 'Portimão', flag: '🇵🇹' },
+  { id: 'qatar', name: 'Qatar', flag: '🇶🇦' },
+  { id: 'sebring', name: 'Sebring', flag: '🇺🇸' },
+  { id: 'silverstone', name: 'Silverstone', flag: '🇬🇧' },
+  { id: 'spa', name: 'Spa-Francorchamps', flag: '🇧🇪' },
+];
+
+let data = JSON.parse(localStorage.getItem('lmu_times') || '{}');
+let currentCircuit = null;
+let currentFilter = 'all';
+
+function save() {
+  try { localStorage.setItem('lmu_times', JSON.stringify(data)); } catch(e) {}
+}
+
+function setFilter(f, el) {
+  currentFilter = f;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  renderGrid();
+}
+
+function updateStats() {
+  const done = Object.keys(data).length;
+  document.getElementById('stat-circuits').textContent = circuits.length;
+  document.getElementById('stat-done').textContent = done;
+}
+
+function renderGrid() {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  circuits.forEach(c => {
+    const entry = data[c.id];
+    const hasDone = !!entry;
+    if (currentFilter === 'done' && !hasDone) return;
+    if (currentFilter === 'todo' && hasDone) return;
+
+    const card = document.createElement('div');
+    card.className = 'circuit-card' + (hasDone ? ' has-time' : '');
+    card.onclick = () => openModal(c);
+
+    card.innerHTML = `
+      ${hasDone ? '<div class="circuit-badge"></div>' : ''}
+      <div class="circuit-flag">${c.flag}</div>
+      <div class="circuit-name">${c.name}</div>
+      ${hasDone
+        ? `<div class="circuit-time">${entry.time}</div><div class="circuit-car">${entry.car || ''}</div>`
+        : `<div class="circuit-no-time">— pas de chrono</div>`
+      }
+    `;
+    grid.appendChild(card);
+  });
+}
+
+function openModal(c) {
+  currentCircuit = c;
+  document.getElementById('modal-circuit-name').textContent = `${c.flag}  ${c.name}`;
+  document.getElementById('input-time').value = '';
+  document.getElementById('input-car').value = '';
+
+  const entry = data[c.id];
+  const prevBlock = document.getElementById('prev-block');
+  const delBtn = document.getElementById('btn-del');
+
+  if (entry) {
+    document.getElementById('prev-time-val').textContent = entry.time;
+    if (entry.car) document.getElementById('prev-time-val').textContent += '  · ' + entry.car;
+    prevBlock.style.display = 'flex';
+    delBtn.style.display = 'block';
+    document.getElementById('input-time').value = entry.time;
+    document.getElementById('input-car').value = entry.car || '';
+  } else {
+    prevBlock.style.display = 'none';
+    delBtn.style.display = 'none';
+  }
+
+  document.getElementById('modal-overlay').classList.add('open');
+  setTimeout(() => document.getElementById('input-time').focus(), 50);
+}
+
+function closeModal() {
+  document.getElementById('modal-overlay').classList.remove('open');
+  currentCircuit = null;
+}
+
+function saveTime() {
+  const time = document.getElementById('input-time').value.trim();
+  const car = document.getElementById('input-car').value.trim();
+  if (!time || !currentCircuit) return;
+  data[currentCircuit.id] = { time, car, date: new Date().toISOString() };
+  save();
+  renderGrid();
+  updateStats();
+  closeModal();
+}
+
+function deleteTime() {
+  if (!currentCircuit) return;
+  delete data[currentCircuit.id];
+  save();
+  renderGrid();
+  updateStats();
+  closeModal();
+}
+
+document.getElementById('modal-overlay').addEventListener('click', e => {
+  if (e.target === document.getElementById('modal-overlay')) closeModal();
+});
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeModal();
+  if (e.key === 'Enter' && document.getElementById('modal-overlay').classList.contains('open')) saveTime();
+});
+
+renderGrid();
+updateStats();
+</script>
